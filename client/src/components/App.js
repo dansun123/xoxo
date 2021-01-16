@@ -55,7 +55,6 @@ class App extends Component {
           />
           <NotFound default />
         </Router>
-        <button onClick={() => console.log(this.state)}></button>
       </>
     );
   }

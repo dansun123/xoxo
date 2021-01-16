@@ -9,6 +9,7 @@ function getOrCreateUser(user) {
   return User.findOne({ spotifyId: user.id }).then((existingUser) => {
     if (existingUser) return existingUser;
 
+
     const newUser = new User({
       name: user.display_name,
       spotifyId: user.id,
@@ -34,16 +35,16 @@ const callback = async (req, res, spotifyApi) => {
     spotifyApi.getMe()
       .then((user) => {
         console.log('Some information about the authenticated user', user.body);
-        getOrCreateUser(user.body)
+        return getOrCreateUser(user.body)
       }, (err) => {
         console.log('Something went wrong!', err);
       }).then((user) => {
         req.session.user = user;
+        res.redirect('http://localhost:5000/');
       }).catch((err) => {
         console.log(`Failed to log in: ${err}`);
         res.status(401).send({ err });
       });
-    res.redirect('http://localhost:5000/');
   } catch (err) {
     res.redirect('/#/error/invalid token');
   }
