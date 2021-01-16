@@ -4,6 +4,8 @@ import GoogleLogin, { GoogleLogout } from "react-google-login";
 import "../../utilities.css";
 import "./Skeleton.css";
 
+import { get, post } from "../../utilities";
+
 //TODO: REPLACE WITH YOUR OWN CLIENT_ID
 const GOOGLE_CLIENT_ID = "121479668229-t5j82jrbi9oejh7c8avada226s75bopn.apps.googleusercontent.com";
 
@@ -18,6 +20,14 @@ class Skeleton extends Component {
     // remember -- api calls go here!
   }
 
+  handleLogin = () => {
+    get("/api/spotifyLogin").then((data) => {
+      console.log((data))
+      window.location.href = data.url
+    })
+  }
+
+
   render() {
     return (
       <>
@@ -29,13 +39,13 @@ class Skeleton extends Component {
             onFailure={(err) => console.log(err)}
           />
         ) : (
-          <GoogleLogin
-            clientId={GOOGLE_CLIENT_ID}
-            buttonText="Login"
-            onSuccess={this.props.handleLogin}
-            onFailure={(err) => console.log(err)}
-          />
-        )}
+            <GoogleLogin
+              clientId={GOOGLE_CLIENT_ID}
+              buttonText="Login"
+              onSuccess={this.props.handleLogin}
+              onFailure={(err) => console.log(err)}
+            />
+          )}
         <h1>Good luck on your project :)</h1>
         <h2> What we provide in this skeleton</h2>
         <ul>
@@ -53,6 +63,7 @@ class Skeleton extends Component {
           <li>Add a favicon to your website at the path client/dist/favicon.ico</li>
           <li>Update website title in client/dist/index.html</li>
         </ul>
+        <button onClick={this.handleLogin}>click me</button>
       </>
     );
   }

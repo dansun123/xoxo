@@ -31,7 +31,7 @@ require('dotenv').config();
 var spotifyApi = new SpotifyWebApi({
   clientId: process.env.SPOTIFY_API_ID,
   clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-  redirectUri: process.env.CALLBACK_URL,
+  redirectUri: process.env.CALLBACK_URI,
 });
 
 /* GET home page. */
@@ -40,9 +40,10 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/spotifyLogin', (req, res) => {
+  console.log("called")
   var html = spotifyApi.createAuthorizeURL(scopes)
   console.log(html)
-  res.send(html + "&show_dialog=true")
+  res.send({ url: html })
 })
 
 router.get('/callback', async (req, res) => {
@@ -54,7 +55,7 @@ router.get('/callback', async (req, res) => {
     spotifyApi.setAccessToken(access_token);
     spotifyApi.setRefreshToken(refresh_token);
 
-    res.redirect('http://localhost:3001/home');
+    res.redirect('http://localhost:5000/');
   } catch (err) {
     res.redirect('/#/error/invalid token');
   }
