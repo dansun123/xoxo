@@ -60,6 +60,16 @@ router.get('/callback', async (req, res) => {
     res.redirect('/#/error/invalid token');
   }
 });
+router.get('/playlists', async (req, res) => {
+  try {
+    var result = await spotifyApi.getUserPlaylists();
+    console.log(result.body);
+    res.status(200).send(result.body);
+  } catch (err) {
+    res.status(400).send(err)
+  }
+
+});
 
 router.post("/login", auth.login);
 router.post("/logout", auth.logout);

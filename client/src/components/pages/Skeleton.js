@@ -27,6 +27,13 @@ class Skeleton extends Component {
     })
   }
 
+  getPlaylists = () => {
+    get("/api/playlists").then((data) => {
+      console.log(data);
+      this.setState({ display: true });
+    })
+  }
+
 
   render() {
     return (
@@ -63,7 +70,9 @@ class Skeleton extends Component {
           <li>Add a favicon to your website at the path client/dist/favicon.ico</li>
           <li>Update website title in client/dist/index.html</li>
         </ul>
-        <button onClick={this.handleLogin}>click me</button>
+        <button onClick={this.handleLogin}>spotify login</button>
+        <button onClick={this.getPlaylists}>get playlists</button>
+        {this.state.display ? <div>check your console log and explore the object there </div> : <div></div>}
       </>
     );
   }
