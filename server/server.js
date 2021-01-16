@@ -33,7 +33,7 @@ const socket = require("./server-socket");
 
 // Server configuration below
 // Server configuration below
-const mongoConnectionURL = "mongodb+srv://weblabwinners:weblabwinners@spotifyapp.is2qi.mongodb.net/SpotifyApp?retryWrites=true&w=majority";
+const mongoConnectionURL = process.env.ATLAS_SRV;
 // TODO change database name to the name you chose
 const databaseName = "test";
 
@@ -57,7 +57,7 @@ app.use(express.json());
 // set up a session, which will persist login data across requests
 app.use(
   session({
-    secret: "session-secret",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
   })
