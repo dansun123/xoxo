@@ -7,9 +7,10 @@ function getOrCreateUser(user, accessToken) {
   // the "sub" field means "subject", which is a unique identifier for each user
   console.log("user's id is " + user.id)
   return User.findOne({ spotifyId: user.id }).then((existingUser) => {
-    if (existingUser) return existingUser;
-
-
+    if (existingUser) {
+      existingUser.accessToken = accessToken;
+      return existingUser.save();
+    }
     const newUser = new User({
       name: user.display_name,
       spotifyId: user.id,
