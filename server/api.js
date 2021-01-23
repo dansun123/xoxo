@@ -52,9 +52,10 @@ router.get('/playlists', async (req, res) => {
     const result = await loggedInSpotifyApi.getUserPlaylists();
     res.status(200).send(result.body);
   } catch (err) {
-    res.status(400).send(err)
+    auth.spotifyLogin(req, res, spotifyApi);
   }
 });
+
 router.get('/getMe', (req, res) => {
   const loggedInSpotifyApi = new SpotifyWebApi({
     clientId: process.env.SPOTIFY_API_ID,
@@ -69,6 +70,7 @@ router.get('/getMe', (req, res) => {
       res.send(data)
     }, function (err) {
       console.log('Something went wrong!', err);
+      auth.spotifyLogin(req, res, spotifyApi);
     });
 })
 router.post("/logout", (req, res) => { auth.logout(req, res, spotifyApi) });
