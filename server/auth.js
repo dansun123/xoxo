@@ -3,23 +3,24 @@ const User = require("./models/user");
 const socket = require("./server-socket");
 
 // gets user from DB, or makes a new account if it doesn't exist yet
-function getOrCreateUser(user, accessToken) {
+function getOrCreateUser(user, refreshToken) {
   // the "sub" field means "subject", which is a unique identifier for each user
   console.log("user's id is " + user.id)
   return User.findOne({ spotifyId: user.id }).then((existingUser) => {
     if (existingUser) {
-      existingUser.accessToken = accessToken;
+      existingUser.refreshToken = refreshToken;
       return existingUser.save();
     }
     const newUser = new User({
       name: user.display_name,
       spotifyId: user.id,
-      accessToken: accessToken,
+      refreshToken: refreshToken,
     });
 
     return newUser.save();
   });
 }
+
 const spotifyLogin = (req, res, spotifyApi) => {
   var html = spotifyApi.createAuthorizeURL(scopes)
   console.log(html)
@@ -37,12 +38,14 @@ const callback = async (req, res, spotifyApi) => {
     spotifyApi.getMe()
       .then((user) => {
         console.log('Some information about the authenticated user', user.body);
-        return getOrCreateUser(user.body, accessToken)
+        return getOrCreateUser(user.body, refreshToken)
       }, (err) => {
         console.log('Something went wrong!', err);
       }).then((user) => {
         req.session.user = user;
-        res.redirect('http://localhost:5000/');
+        spotifyApi.resetAccessToken();
+        spotifyApi.resetRefreshToken();
+        res.redirect('/');
       }).catch((err) => {
         console.log(`Failed to log in: ${err}`);
         res.status(401).send({ err });
@@ -52,10 +55,8 @@ const callback = async (req, res, spotifyApi) => {
   }
 }
 
-function logout(req, res, spotifyApi) {
+function logout(req, res) {
   req.session.user = null;
-  spotifyApi.resetAccessToken();
-  spotifyApi.resetRefreshToken();
   res.send({});
 }
 

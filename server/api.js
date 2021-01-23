@@ -48,11 +48,15 @@ router.get('/playlists', async (req, res) => {
       clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
       redirectUri: process.env.CALLBACK_URI,
     });
-    loggedInSpotifyApi.setAccessToken(req.user.accessToken);
-    const result = await loggedInSpotifyApi.getUserPlaylists();
-    res.status(200).send(result.body);
+    loggedInSpotifyApi.setRefreshToken(req.user.refreshToken);
+    loggedInSpotifyApi.refreshAccessToken().then((data) => {
+      console.log("Access Token Refreshed!");
+      loggedInSpotifyApi.setAccessToken(data.body['access_token']);
+      const result = await loggedInSpotifyApi.getUserPlaylists();
+      res.status(200).send(result.body);
+    })
   } catch (err) {
-    auth.spotifyLogin(req, res, spotifyApi);
+    res.status(400).send(err);
   }
 });
 
@@ -62,24 +66,37 @@ router.get('/getMe', (req, res) => {
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
     redirectUri: process.env.CALLBACK_URI,
   });
-  console.log(req.user)
-  loggedInSpotifyApi.setAccessToken(req.user.accessToken);
-  loggedInSpotifyApi.getMe()
-    .then(function (data) {
-      console.log('Some information about the authenticated user', data.body);
-      res.send(data)
-    }, function (err) {
-      console.log('Something went wrong!', err);
-      auth.spotifyLogin(req, res, spotifyApi);
-    });
+  loggedInSpotifyApi.setRefreshToken(req.user.refreshToken);
+  loggedInSpotifyApi.refreshAccessToken().then((data) => {
+    loggedInSpotifyApi.setAccessToken(data.body['access_token']);
+    loggedInSpotifyApi.getMe()
+      .then(function (data) {
+        console.log('Some information about the authenticated user', data.body);
+        res.send(data)
+      }, function (err) {
+        console.log('Something went wrong!', err);
+      });
+  });
 })
-router.post("/logout", (req, res) => { auth.logout(req, res, spotifyApi) });
+
+router.post("/logout", auth.logout);
 router.get("/whoami", (req, res) => {
   if (!req.user) {
     // not logged in
     return res.send({});
   }
-
+  const loggedInSpotifyApi = new SpotifyWebApi({
+    clientId: process.env.SPOTIFY_API_ID,
+    clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+    redirectUri: process.env.CALLBACK_URI,
+  });
+  loggedInSpotifyApi.setAccessToken(req.user.accessToken);
+  loggedInSpotifyApi.getMe().then((data) => {
+    console.log('Some information about the authenticated user', data.body);
+  }, (err) => {
+    console.log("something went wrong!", err);
+    auth.spotifyLogin(req, res, spotifyApi);
+  })
   res.send(req.user);
 });
 
