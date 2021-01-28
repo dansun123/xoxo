@@ -49,7 +49,7 @@ router.get('/playlists', async (req, res) => {
       redirectUri: process.env.CALLBACK_URI,
     });
     loggedInSpotifyApi.setRefreshToken(req.user.refreshToken);
-    loggedInSpotifyApi.refreshAccessToken().then((data) => {
+    loggedInSpotifyApi.refreshAccessToken().then(async (data) => {
       console.log("Access Token Refreshed!");
       loggedInSpotifyApi.setAccessToken(data.body['access_token']);
       const result = await loggedInSpotifyApi.getUserPlaylists();
@@ -85,18 +85,6 @@ router.get("/whoami", (req, res) => {
     // not logged in
     return res.send({});
   }
-  const loggedInSpotifyApi = new SpotifyWebApi({
-    clientId: process.env.SPOTIFY_API_ID,
-    clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-    redirectUri: process.env.CALLBACK_URI,
-  });
-  loggedInSpotifyApi.setAccessToken(req.user.accessToken);
-  loggedInSpotifyApi.getMe().then((data) => {
-    console.log('Some information about the authenticated user', data.body);
-  }, (err) => {
-    console.log("something went wrong!", err);
-    auth.spotifyLogin(req, res, spotifyApi);
-  })
   res.send(req.user);
 });
 
