@@ -2,6 +2,8 @@ const { OAuth2Client } = require("google-auth-library");
 const User = require("./models/user");
 const socket = require("./server-socket");
 
+scopes = ['user-read-private', 'user-read-email', 'playlist-modify-public', 'playlist-modify-private'];
+
 // gets user from DB, or makes a new account if it doesn't exist yet
 function getOrCreateUser(user, refreshToken) {
   // the "sub" field means "subject", which is a unique identifier for each user

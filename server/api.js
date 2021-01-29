@@ -24,7 +24,6 @@ const socket = require("./server-socket");
 
 // documentation here https://www.npmjs.com/package/spotify-web-api-node
 const SpotifyWebApi = require('spotify-web-api-node');
-scopes = ['user-read-private', 'user-read-email', 'playlist-modify-public', 'playlist-modify-private']
 
 // TODO: create an account at https://developer.spotify.com/dashboard/ 
 // fill in your spotify developer information in .env
