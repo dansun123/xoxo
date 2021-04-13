@@ -1,0 +1,22 @@
+
+.App {
+    position: relative;
+    background-color: var(--background);
+    min-height: 100vh;
+    display: flex;
+    color: #FF0D86;
+    /*justify-content: center;*/
+    /*text-align: center;*/
+    flex-direction: column;
+}
+
+.button-outline {
+    background-color: var(--background);
+    border: 2px solid var(--pink) !important;
+    color: var(--pink) !important;
+}
+
+.button-outline:hover {
+    color: white !important;
+    background-color: var(--pink);
+}
