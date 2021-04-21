@@ -1,16 +1,17 @@
 import React from 'react';
-import './Landing.css';
-import {Button} from "rebass";
+// import './Landing.css';
+import {Button} from "@material-ui/core";
+
 
 const Landing = () => {
 
-    const touchstone = () => {
-        // Launch touchstone
+    const handleTouchstone = () => {
+        // TODO: Launch touchstone
     }
 
     return (
-        <div className="Landing">
-            <Button className="button-outline" onClick={touchstone}>
+        <div>
+            <Button variant="contained" onClick={handleTouchstone}>
                 Login
             </Button>
         </div>
