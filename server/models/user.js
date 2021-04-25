@@ -2,7 +2,9 @@ const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
   name: String,
-  googleid: String,
+  email: { type: String, unique: true },
+  accessToken: String,
+  isVerified: String,
 });
 
 // compile model from schema
